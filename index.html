@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio — Marketing, Communication & SEO</title>
+  <meta name="description" content="Portfolio marketing & communication : profil, réalisations graphiques (réseaux sociaux, print) et résultats SEO pour les marques du groupe Logista Hometech." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FF5A1F'/%3E%3C/svg%3E" />
+</head>
+<body class="is-loading">
+  <!-- Préchargement -->
+  <div class="loader" aria-hidden="true">
+    <div class="loader__words">
+      <span>Soltys</span><span>Nevyo</span><span>Airelys</span><span>Hygelys</span><span>Logista&nbsp;Hybride</span>
+    </div>
+    <div class="loader__count"><span data-loader-count>0</span>%</div>
+  </div>
+
+  <!-- Curseur personnalisé -->
+  <div class="cursor" aria-hidden="true"><span class="cursor__label"></span></div>
+
+  <!-- Aperçu flottant (liste des marques) -->
+  <div class="float-preview" aria-hidden="true"><div class="float-preview__inner"></div></div>
+
+  <header class="nav">
+    <a href="#top" class="nav__logo" data-magnetic><span data-name-initials></span></a>
+    <nav class="nav__links" aria-label="Navigation principale">
+      <a href="#profil" data-hover>Profil</a>
+      <a href="#marques" data-hover>Marques</a>
+      <a href="#realisations" data-hover>Réalisations</a>
+      <a href="#seo" data-hover>SEO</a>
+      <a href="#contact" class="nav__cta" data-hover>Contact</a>
+    </nav>
+    <div class="nav__time" aria-label="Heure locale"><span class="dot"></span><span data-clock></span></div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero" data-theme="light">
+      <div class="hero__shapes" aria-hidden="true">
+        <span class="shape shape--1" data-depth="0.04"></span>
+        <span class="shape shape--2" data-depth="-0.06"></span>
+        <span class="shape shape--3" data-depth="0.08"></span>
+        <span class="shape shape--4" data-depth="-0.03"></span>
+      </div>
+
+      <p class="hero__kicker reveal-up"><span data-name-full></span> — <span data-role></span></p>
+
+      <h1 class="hero__title">
+        <span class="line"><span class="line__inner">Je fais</span></span>
+        <span class="line"><span class="line__inner"><em class="serif">rayonner</em> <span class="hero__pill" aria-hidden="true"><span class="hero__pill-track">
+          <span>📣</span><span>✏️</span><span>📈</span><span>🎬</span><span>📣</span>
+        </span></span></span></span>
+        <span class="line"><span class="line__inner">des marques<span class="accent">.</span></span></span>
+      </h1>
+
+      <div class="hero__bottom">
+        <p class="hero__intro reveal-up">
+          Réseaux sociaux, print, sites web &amp; SEO pour
+          <span class="rotator" aria-live="polite"><span data-rotator></span></span>
+        </p>
+        <a href="#profil" class="sticker" data-hover data-cursor="Scroll" aria-label="Défiler vers le profil">
+          <svg viewBox="0 0 200 200" class="sticker__ring">
+            <defs><path id="circlePath" d="M100,100 m-75,0 a75,75 0 1,1 150,0 a75,75 0 1,1 -150,0" /></defs>
+            <text><textPath href="#circlePath" textLength="466" lengthAdjust="spacing">PORTFOLIO • MARKETING • COMMUNICATION • SEO •</textPath></text>
+          </svg>
+          <span class="sticker__arrow">↓</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- MARQUEE MARQUES -->
+    <section class="marquees" aria-label="Marques accompagnées">
+      <div class="marquee" data-marquee="1"><div class="marquee__track" data-marquee-brands></div></div>
+      <div class="marquee marquee--alt" data-marquee="-1"><div class="marquee__track" data-marquee-skills></div></div>
+    </section>
+
+    <!-- PROFIL -->
+    <section class="profil section" id="profil" data-theme="light">
+      <div class="section__head">
+        <span class="section__num">(01)</span>
+        <h2 class="section__title"><span class="line"><span class="line__inner">Profil</span></span></h2>
+      </div>
+
+      <div class="profil__grid">
+        <div class="profil__photo reveal-scale">
+          <div class="profil__photo-inner" data-photo></div>
+          <span class="profil__badge">@ <span data-company></span></span>
+        </div>
+        <div class="profil__content">
+          <p class="scrub-text" data-intro></p>
+
+          <div class="stats" data-stats></div>
+
+          <div class="profil__lists">
+            <div>
+              <h3 class="mini-title">Compétences</h3>
+              <ul class="chips" data-skills></ul>
+            </div>
+            <div>
+              <h3 class="mini-title">Outils</h3>
+              <ul class="chips chips--outline" data-tools></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUES -->
+    <section class="brands section" id="marques" data-theme="cream">
+      <div class="section__head">
+        <span class="section__num">(02)</span>
+        <h2 class="section__title"><span class="line"><span class="line__inner">Marques <em class="serif">&amp;</em> canaux</span></span></h2>
+      </div>
+      <p class="section__lead reveal-up">Un groupe, plusieurs filiales, autant d'identités à faire vivre au quotidien.</p>
+
+      <ul class="brand-list" data-brands></ul>
+
+      <div class="channels">
+        <div class="channel-card channel-card--web reveal-up">
+          <span class="channel-card__big"><span data-count="9">0</span></span>
+          <span class="channel-card__label">sites web gérés<br /><small>dont 4 travaillés en SEO</small></span>
+        </div>
+        <div class="channels__socials" data-socials></div>
+      </div>
+    </section>
+
+    <!-- RÉALISATIONS -->
+    <section class="works section" id="realisations" data-theme="light">
+      <div class="section__head">
+        <span class="section__num">(03)</span>
+        <h2 class="section__title"><span class="line"><span class="line__inner">Réalisations</span></span></h2>
+      </div>
+
+      <div class="filters reveal-up" role="tablist" aria-label="Filtrer les réalisations">
+        <button class="filter is-active" data-filter="all" data-hover>Tout <sup data-filter-count="all"></sup></button>
+        <button class="filter" data-filter="social" data-hover>Réseaux sociaux <sup data-filter-count="social"></sup></button>
+        <button class="filter" data-filter="print" data-hover>Print <sup data-filter-count="print"></sup></button>
+        <button class="filter" data-filter="video" data-hover>Vidéo <sup data-filter-count="video"></sup></button>
+      </div>
+
+      <div class="works__grid" data-works></div>
+    </section>
+
+    <!-- SEO -->
+    <section class="seo section" id="seo" data-theme="dark">
+      <div class="section__head">
+        <span class="section__num">(04)</span>
+        <h2 class="section__title"><span class="line"><span class="line__inner">Résultats <em class="serif">SEO</em></span></span></h2>
+      </div>
+      <p class="section__lead reveal-up">4 sites travaillés en référencement naturel. Des positions, du trafic, et surtout des contacts.</p>
+
+      <div class="seo__tabs" role="tablist" data-seo-tabs></div>
+
+      <div class="seo__panel">
+        <div class="seo__metrics" data-seo-metrics></div>
+        <div class="seo__chart">
+          <div class="seo__chart-head">
+            <span>Trafic organique mensuel</span>
+            <span class="seo__chart-site" data-seo-site></span>
+          </div>
+          <svg viewBox="0 0 600 260" preserveAspectRatio="none" data-seo-chart>
+            <defs>
+              <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--chart)" stop-opacity=".45" />
+                <stop offset="100%" stop-color="var(--chart)" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <g class="grid-lines"></g>
+            <g class="plot">
+              <path class="area" fill="url(#chartFill)" />
+              <path class="line" />
+              <g class="points"></g>
+            </g>
+          </svg>
+          <div class="seo__months" data-seo-months></div>
+        </div>
+      </div>
+
+      <ol class="seo__method" data-seo-method></ol>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact" id="contact" data-theme="accent">
+      <p class="contact__kicker reveal-up">(05) — Contact</p>
+      <h2 class="contact__title">
+        <span class="line"><span class="line__inner">On travaille</span></span>
+        <span class="line"><span class="line__inner"><em class="serif">ensemble</em> ?</span></span>
+      </h2>
+      <div class="contact__actions">
+        <a class="big-btn" data-magnetic data-hover data-cursor="Écrire" data-email-link>
+          <span class="big-btn__text" data-email></span>
+        </a>
+        <a class="link-arrow" data-hover data-linkedin target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© <span data-year></span> <span data-name-full></span></span>
+    <span>Marketing · Communication · SEO</span>
+    <a href="#top" data-hover>Haut de page ↑</a>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+    <button class="lightbox__close" data-hover aria-label="Fermer">Fermer ✕</button>
+    <div class="lightbox__inner">
+      <div class="lightbox__media" data-lb-media></div>
+      <div class="lightbox__info">
+        <span class="lightbox__meta" data-lb-meta></span>
+        <h3 class="lightbox__title" data-lb-title></h3>
+        <p data-lb-desc></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
