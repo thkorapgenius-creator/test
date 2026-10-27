@@ -1,0 +1,15 @@
+{
+  "name": "reel-purge-radiateurs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "setup": "node scripts/vendor.mjs",
+    "preview": "node scripts/render.mjs --preview",
+    "render": "node scripts/render.mjs",
+    "cover": "node scripts/render.mjs --cover"
+  },
+  "devDependencies": {
+    "three": "0.165.0",
+    "@fontsource/nunito": "5.0.18"
+  }
+}

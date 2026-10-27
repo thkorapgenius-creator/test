@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Purger ses radiateurs</title>
+    <style>
+      @font-face { font-family: "Nunito"; font-weight: 700; src: url("assets/fonts/nunito-700.woff2") format("woff2"); font-display: block; }
+      @font-face { font-family: "Nunito"; font-weight: 800; src: url("assets/fonts/nunito-800.woff2") format("woff2"); font-display: block; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #e2d3c0; }
+      #root {
+        position: relative; width: 1080px; height: 1920px; overflow: hidden;
+        background: radial-gradient(ellipse 120% 70% at 50% 46%, #f6ecdf 0%, #ead9c4 55%, #d8c1a6 100%);
+        font-family: "Nunito", sans-serif; color: #3b2a20;
+      }
+      #gl { position: absolute; inset: 0; width: 1080px; height: 1920px; display: block; }
+      #txt { position: absolute; inset: 0; pointer-events: none; }
+      .blk { position: absolute; left: 70px; right: 70px; text-align: center; display: none; text-wrap: balance; }
+      .w { display: inline-block; white-space: pre; will-change: transform, opacity; }
+      .num { color: #d8612f; }
+      .titre { top: 330px; font-size: 106px; font-weight: 800; line-height: 1.06; letter-spacing: -1.5px; }
+      .haut { top: 300px; font-size: 66px; font-weight: 800; line-height: 1.15; letter-spacing: -0.5px; }
+      .bas, .liste { bottom: 300px; }
+      .card {
+        display: inline-block; background: #fffaf3; border-radius: 36px; padding: 26px 42px 30px;
+        box-shadow: 0 16px 34px rgba(110, 70, 40, 0.18); font-size: 50px; font-weight: 700; line-height: 1.22;
+        transform-origin: 50% 100%;
+      }
+      .liste .card { text-align: left; font-size: 46px; padding: 28px 40px; }
+      .row { display: flex; align-items: flex-start; gap: 22px; }
+      .row + .row { margin-top: 18px; }
+      .dot { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; background: #d8612f; margin-top: 15px; }
+      /* couverture */
+      #cover { position: absolute; inset: 0; display: none; }
+      #cover .ct { text-wrap: balance; position: absolute; top: 330px; left: 60px; right: 60px; text-align: center; font-size: 118px; font-weight: 800; line-height: 1.04; letter-spacing: -2px; }
+      /* jauge agrandie (étape 6) */
+      #gauge { position: absolute; left: 0; top: 0; width: 400px; height: 400px; display: none; transform-origin: 50% 50%; }
+    </style>
+    <script>
+      // HyperFrames : la page signale quand elle est prête, puis peint chaque image demandée par l'événement hf-seek.
+      (function () {
+        var resolve; var ready = new Promise(function (r) { resolve = r; });
+        window.__reelReady = resolve;
+        window.__hf = window.__hf || {}; window.__hf.buildReady = window.__hf.buildReady || {};
+        window.__hf.buildReady.reel = ready;
+        window.__seekTime = 0;
+        window.addEventListener('hf-seek', function (e) {
+          var t = Math.max(0, Number(e.detail && e.detail.time) || 0);
+          window.__seekTime = t;
+          var p = ready.then(function () { window.renderAt(t); });
+          if (e.detail && typeof e.detail.waitUntil === 'function') e.detail.waitUntil(p);
+        });
+      })();
+    </script>
+    <script type="importmap">
+      { "imports": { "three": "./assets/vendor/three.module.js", "three/addons/": "./assets/vendor/addons/" } }
+    </script>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="59.5" data-fps="30" data-no-timeline data-width="1080" data-height="1920">
+      <canvas id="gl" width="1080" height="1920"></canvas>
+      <svg id="gauge" viewBox="0 0 400 400"></svg>
+      <div id="txt"></div>
+      <div id="cover"><div class="ct"></div></div>
+    </div>
+    <script src="contenu.js"></script>
+    <script src="src/text.js"></script>
+    <script type="module" src="src/scene.js"></script>
+  </body>
+</html>
