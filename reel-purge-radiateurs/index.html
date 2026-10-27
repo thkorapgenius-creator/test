@@ -5,35 +5,38 @@
     <meta name="viewport" content="width=1080, height=1920" />
     <title>Purger ses radiateurs</title>
     <style>
-      @font-face { font-family: "Nunito"; font-weight: 700; src: url("assets/fonts/nunito-700.woff2") format("woff2"); font-display: block; }
-      @font-face { font-family: "Nunito"; font-weight: 800; src: url("assets/fonts/nunito-800.woff2") format("woff2"); font-display: block; }
+      /* Charte Soltys : Poppins, jaune #F9B533, gris #545454, bleu nuit #303642 */
+      @font-face { font-family: "Poppins"; font-weight: 600; src: url("assets/fonts/poppins-600.woff2") format("woff2"); font-display: block; }
+      @font-face { font-family: "Poppins"; font-weight: 700; src: url("assets/fonts/poppins-700.woff2") format("woff2"); font-display: block; }
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #e2d3c0; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #f5e6cc; }
       #root {
         position: relative; width: 1080px; height: 1920px; overflow: hidden;
-        background: radial-gradient(ellipse 120% 70% at 50% 46%, #f6ecdf 0%, #ead9c4 55%, #d8c1a6 100%);
-        font-family: "Nunito", sans-serif; color: #3b2a20;
+        background: radial-gradient(ellipse 120% 70% at 50% 46%, #fdf6ea 0%, #f7e9d1 55%, #efd8b2 100%);
+        font-family: "Poppins", sans-serif; color: #303642;
       }
       #gl { position: absolute; inset: 0; width: 1080px; height: 1920px; display: block; }
       #txt { position: absolute; inset: 0; pointer-events: none; }
       .blk { position: absolute; left: 70px; right: 70px; text-align: center; display: none; text-wrap: balance; }
       .w { display: inline-block; white-space: pre; will-change: transform, opacity; }
-      .num { color: #d8612f; }
-      .titre { top: 330px; font-size: 106px; font-weight: 800; line-height: 1.06; letter-spacing: -1.5px; }
-      .haut { top: 300px; font-size: 66px; font-weight: 800; line-height: 1.15; letter-spacing: -0.5px; }
+      .num { background: #f9b533; color: #303642; border-radius: 18px; padding: 0 14px; margin-right: 4px; }
+      .titre { top: 330px; font-size: 92px; font-weight: 700; line-height: 1.12; letter-spacing: -1.5px; }
+      .titre::after, #cover .ct::after { content: ""; display: block; width: 150px; height: 14px; border-radius: 7px; background: #f9b533; margin: 34px auto 0; }
+      .haut { top: 300px; font-size: 56px; font-weight: 700; line-height: 1.3; letter-spacing: -0.5px; }
       .bas, .liste { bottom: 300px; }
       .card {
-        display: inline-block; background: #fffaf3; border-radius: 36px; padding: 26px 42px 30px;
-        box-shadow: 0 16px 34px rgba(110, 70, 40, 0.18); font-size: 50px; font-weight: 700; line-height: 1.22;
+        display: inline-block; background: #ffffff; border-radius: 36px; padding: 26px 42px 30px; color: #303642;
+        border-bottom: 10px solid #f9b533;
+        box-shadow: 0 16px 34px rgba(48, 54, 66, 0.16); font-size: 44px; font-weight: 600; line-height: 1.32;
         transform-origin: 50% 100%;
       }
-      .liste .card { text-align: left; font-size: 46px; padding: 28px 40px; }
+      .liste .card { text-align: left; font-size: 40px; padding: 28px 40px; }
       .row { display: flex; align-items: flex-start; gap: 22px; }
       .row + .row { margin-top: 18px; }
-      .dot { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; background: #d8612f; margin-top: 15px; }
+      .dot { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%; background: #f9b533; margin-top: 15px; }
       /* couverture */
       #cover { position: absolute; inset: 0; display: none; }
-      #cover .ct { text-wrap: balance; position: absolute; top: 330px; left: 60px; right: 60px; text-align: center; font-size: 118px; font-weight: 800; line-height: 1.04; letter-spacing: -2px; }
+      #cover .ct { text-wrap: balance; position: absolute; top: 330px; left: 60px; right: 60px; text-align: center; font-size: 104px; font-weight: 700; line-height: 1.1; letter-spacing: -2px; }
       /* jauge agrandie (étape 6) */
       #gauge { position: absolute; left: 0; top: 0; width: 400px; height: 400px; display: none; transform-origin: 50% 50%; }
     </style>

@@ -9,7 +9,7 @@
     "cover": "node scripts/render.mjs --cover"
   },
   "devDependencies": {
-    "three": "0.165.0",
-    "@fontsource/nunito": "5.0.18"
+    "@fontsource/poppins": "^5.3.0",
+    "three": "0.165.0"
   }
 }

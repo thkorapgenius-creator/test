@@ -1,6 +1,6 @@
 # Reel « Comment purger ses radiateurs ? »
 
-Vidéo verticale 1080×1920, 30 i/s, 59,5 s, H.264 avec piste son vide. Version neutre : sans marque ni logo.
+Vidéo verticale 1080×1920, 30 i/s, 59,5 s, H.264 avec piste son vide. Aux couleurs et à la police de la charte Soltys, sans logo.
 La fin garde le bas de l'écran vide pour y poser un logo.
 
 ## Fichiers produits
@@ -26,15 +26,15 @@ Prérequis : Node 22+, ffmpeg et Playwright avec Chromium (déjà installés dan
 
 ```bash
 cd reel-purge-radiateurs
-npm install && npm run setup    # une seule fois : copie three.js et la police Nunito dans assets/
+npm install && npm run setup    # une seule fois : copie three.js et la police Poppins dans assets/
 npm run preview                 # une image par scène → renders/apercu/
 npm run cover                   # la couverture → renders/couverture.png
 npm run render                  # la vidéo → renders/purger-radiateurs.mp4 (quelques minutes)
 node scripts/render.mjs --at 27.2   # une seule image à 27,2 s → renders/image-27.2.png
 ```
 
-La page `index.html` est aussi une composition HyperFrames : elle répond à l'événement `hf-seek`. Elle peut donc
-être rendue avec `npx --yes hyperframes@0.8.71 render --fps 30 -o renders/purger-radiateurs.mp4` depuis ce dossier.
+La page `index.html` suit aussi le format d'une composition HyperFrames (attributs `data-*`, événement `hf-seek`).
+Le rendu livré a été fait avec `scripts/render.mjs` ; le rendu par HyperFrames n'a pas été testé.
 
 ## Ajouter le logo
 
@@ -45,4 +45,6 @@ dans votre logiciel de montage, ou ajoutez un `<img>` dans `index.html`.
 
 Il s'inspire des deux vidéos de référence : maquettes 3D isométriques mates qui se construisent pièce par pièce, avec
 un rebond, des ombres douces et un fond uni. Chaque décor se replie en cube puis le suivant s'en déplie.
-Palette chaude : fond sable, murs crème, parquet chêne, accents terracotta. Police : Nunito.
+Couleurs et police de la charte Soltys : jaune `#F9B533` (numéros d'étape, soulignés, repères), bleu nuit `#303642`
+(textes), sur un fond crème chaud. Police : Poppins (la Bariol Light est sous licence payante, elle n'est pas
+incluse). Aucun logo : à ajouter vous-même, sur fond clair en version couleur, avec la baseline « par Logista Hometech ».

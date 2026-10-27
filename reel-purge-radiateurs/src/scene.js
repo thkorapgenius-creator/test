@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 
 // La police sert aussi aux textures dessinées (manomètre, pastilles) : on l'attend avant de construire la scène.
-await Promise.all([document.fonts.load('800 64px Nunito'), document.fonts.load('700 50px Nunito')]);
+await Promise.all([document.fonts.load('700 64px Poppins'), document.fonts.load('600 50px Poppins')]);
 
 const R = window.REEL, S = R.scenes;
 const W = 1080, H = 1920;
@@ -70,11 +70,11 @@ scene.add(ground);
 const mat = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: .85, metalness: 0, ...o });
 const C = {
   wall: mat(0xfaf2e8), wallTop: mat(0xfdf8f1), floor: mat(0xb88b66), glass: mat(0xb9cddd, { roughness: .2, emissive: 0x9fb6c9, emissiveIntensity: .25 }),
-  frame: mat(0xfaf5ee), white: mat(0xfaf6f0), steel: mat(0xb8bdc4, { roughness: .45, metalness: .35 }), dark: mat(0x4a3a32),
+  frame: mat(0xfaf5ee), white: mat(0xfaf6f0), steel: mat(0xb8bdc4, { roughness: .45, metalness: .35 }), dark: mat(0x303642),
   brass: mat(0xcaa03a, { roughness: .4, metalness: .45 }), bowl: mat(0x5aa2d6, { side: THREE.DoubleSide, roughness: .6 }),
   water: mat(0x3d97df, { roughness: .15, transparent: true, opacity: .88 }), crate: mat(0xdcc7a8), crateDk: mat(0xc6ad8a),
-  grass: mat(0x9fd36a), grassDk: mat(0x8cc45a), dirt: mat(0x5b3f2c), roof: mat(0xd8612f), wood: mat(0xd2ad80), tree: mat(0x47a447),
-  trunk: mat(0x7a5236), bush: mat(0xe2c35a), pot: mat(0xc96f4a), leaf: mat(0x4f9e4b), red: mat(0xd8612f, { emissive: 0xd8612f, emissiveIntensity: .35 }),
+  grass: mat(0x9fd36a), grassDk: mat(0x8cc45a), dirt: mat(0x5b3f2c), roof: mat(0xf9b533), wood: mat(0xd2ad80), tree: mat(0x47a447),
+  trunk: mat(0x7a5236), bush: mat(0xe2c35a), pot: mat(0xc96f4a), leaf: mat(0x4f9e4b), red: mat(0x303642),
   blue: mat(0x3d8fd6),
 };
 function box(w, h, d, r, m, x = 0, y = 0, z = 0) {
@@ -169,12 +169,12 @@ function hot(t) {
 
 // chaudière murale : écran (flamme / soleil = position été), manomètre, robinet de remplissage dessous
 const flameTex = canvasTex(256, 128, (g, w, h) => {
-  g.fillStyle = '#3a2d27'; g.fillRect(0, 0, w, h);
+  g.fillStyle = '#303642'; g.fillRect(0, 0, w, h);
   g.fillStyle = '#ff9a3c'; g.beginPath(); g.moveTo(128, 18); g.bezierCurveTo(170, 60, 160, 110, 128, 112); g.bezierCurveTo(96, 110, 86, 60, 128, 18); g.fill();
   g.fillStyle = '#ffd36a'; g.beginPath(); g.moveTo(128, 60); g.bezierCurveTo(146, 82, 142, 106, 128, 106); g.bezierCurveTo(114, 106, 110, 82, 128, 60); g.fill();
 });
 const sunTex = canvasTex(256, 128, (g, w, h) => {
-  g.fillStyle = '#3a2d27'; g.fillRect(0, 0, w, h);
+  g.fillStyle = '#303642'; g.fillRect(0, 0, w, h);
   g.strokeStyle = g.fillStyle = '#ffd24a'; g.lineWidth = 9; g.lineCap = 'round';
   g.beginPath(); g.arc(128, 64, 24, 0, Math.PI * 2); g.fill();
   for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; g.beginPath(); g.moveTo(128 + Math.cos(a) * 36, 64 + Math.sin(a) * 36); g.lineTo(128 + Math.cos(a) * 50, 64 + Math.sin(a) * 50); g.stroke(); }
@@ -185,9 +185,9 @@ const gaugeTex = canvasTex(512, 512, (g, w) => {
   const ang = v => (135 + v / 4 * 270) * Math.PI / 180;   // 0 bar en bas à gauche, 4 bars en bas à droite (sens horaire)
   const arc = (a, b, col) => { g.strokeStyle = col; g.lineWidth = 46; g.beginPath(); g.arc(c, c, c - 60, ang(a), ang(b)); g.stroke(); };
   arc(0, 1, '#e8806f'); arc(1, 1.5, '#3fae5a'); arc(1.5, 2, '#9ad27b'); arc(2, 4, '#e3e5e8');
-  g.fillStyle = '#23262b'; g.font = '800 64px Nunito, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillStyle = '#303642'; g.font = '700 64px Poppins, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
   for (let v = 0; v <= 4; v++) g.fillText(String(v), c + Math.cos(ang(v)) * (c - 140), c + Math.sin(ang(v)) * (c - 140));
-  g.font = '800 46px Nunito, sans-serif'; g.fillText('bar', c, c + 150);
+  g.font = '700 46px Poppins, sans-serif'; g.fillText('bar', c, c + 150);
 });
 const boiler = grp(-1.85, 3.0, -2.5);
 {
@@ -249,7 +249,7 @@ const towelA = actor(towel, [[S[1] + 3.6, ITEMS_END]]);
 
 // flèche « sens inverse des aiguilles d'une montre », vue face à la vis
 const ccwTex = canvasTex(256, 256, (g, w) => {
-  const c = w / 2; g.strokeStyle = '#d8612f'; g.fillStyle = '#d8612f'; g.lineWidth = 22; g.lineCap = 'round';
+  const c = w / 2; g.strokeStyle = '#f2a516'; g.fillStyle = '#f2a516'; g.lineWidth = 22; g.lineCap = 'round';
   g.beginPath(); g.arc(c, c, 86, -Math.PI * .15, Math.PI * 1.25); g.stroke();
   const a = -Math.PI * .15, x = c + Math.cos(a) * 86, y = c + Math.sin(a) * 86;
   g.beginPath(); g.moveTo(x + 34, y + 8); g.lineTo(x - 26, y - 4); g.lineTo(x + 6, y - 46); g.closePath(); g.fill();
@@ -258,7 +258,7 @@ const ccw = new THREE.Sprite(new THREE.SpriteMaterial({ map: ccwTex, transparent
 scene.add(ccw);
 
 // repère pulsant (vis de purge, robinet)
-const ring = new THREE.Mesh(new THREE.TorusGeometry(.2, .03, 12, 48), new THREE.MeshBasicMaterial({ color: 0xd8612f, transparent: true, depthTest: false }));
+const ring = new THREE.Mesh(new THREE.TorusGeometry(.2, .03, 12, 48), new THREE.MeshBasicMaterial({ color: 0xf2a516, transparent: true, depthTest: false }));
 ring.renderOrder = 5; scene.add(ring);
 
 // air et eau
@@ -297,8 +297,8 @@ for (const [x, z, s] of [[2.3, -2.2, 1.1], [2.55, -.9, .8], [2.4, 2.3, .9], [-2.
 }
 actor(grp(-1.0, 0, 2.2, ball(.38, C.bush, 0, .34, 0)), HOUSE, .6);
 const badgeTex = n => canvasTex(160, 160, (g, w) => {
-  g.fillStyle = '#3fae5a'; g.beginPath(); g.arc(80, 80, 74, 0, Math.PI * 2); g.fill();
-  g.fillStyle = '#fff'; g.font = '800 104px Nunito, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(String(n), 80, 86);
+  g.fillStyle = '#f9b533'; g.beginPath(); g.arc(80, 80, 74, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#303642'; g.font = '700 96px Poppins, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(String(n), 80, 86);
 });
 const badges = hrads.map((h, i) => {
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: badgeTex(i + 1), transparent: true, depthTest: false }));
@@ -349,9 +349,9 @@ const gaugeEl = document.getElementById('gauge');
   const arc = (a, b, col) => `<path d="M ${pt(a, r)} A ${r} ${r} 0 ${(b - a) / 4 * 270 > 180 ? 1 : 0} 1 ${pt(b, r)}" stroke="${col}" stroke-width="30" fill="none"/>`;
   let s = `<circle cx="200" cy="200" r="196" fill="#fff" stroke="#b8bdc4" stroke-width="8"/>`;
   s += arc(0, 1, '#e8806f') + arc(1, 1.5, '#3fae5a') + arc(1.5, 2, '#9ad27b') + arc(2, 4, '#e3e5e8');
-  for (let v = 0; v <= 4; v++) s += `<text x="${pt(v, 104).split(' ')[0]}" y="${pt(v, 104).split(' ')[1]}" font-family="Nunito" font-weight="800" font-size="40" text-anchor="middle" dominant-baseline="central" fill="#23262b">${v}</text>`;
-  s += `<text x="200" y="296" font-family="Nunito" font-weight="800" font-size="34" text-anchor="middle" fill="#23262b">bar</text>`;
-  s += `<g id="gneedle"><path d="M 192 200 L 200 70 L 208 200 Z" fill="#d8612f"/></g><circle cx="200" cy="200" r="18" fill="#23262b"/>`;
+  for (let v = 0; v <= 4; v++) s += `<text x="${pt(v, 104).split(' ')[0]}" y="${pt(v, 104).split(' ')[1]}" font-family="Poppins" font-weight="700" font-size="40" text-anchor="middle" dominant-baseline="central" fill="#303642">${v}</text>`;
+  s += `<text x="200" y="296" font-family="Poppins" font-weight="700" font-size="34" text-anchor="middle" fill="#303642">bar</text>`;
+  s += `<g id="gneedle"><path d="M 192 200 L 200 70 L 208 200 Z" fill="#303642"/></g><circle cx="200" cy="200" r="18" fill="#303642"/>`;
   gaugeEl.innerHTML = s;
 }
 const gneedle = gaugeEl.querySelector('#gneedle');
@@ -508,7 +508,7 @@ window.renderAt = renderAt;
 // Couverture : une image du film, sans les textes du film, avec le titre de couverture.
 window.renderCover = function () {
   // cadrage propre à la couverture : la pièce entière, sous le titre
-  renderAt(R.couverture.instant, { noText: true, noOverlay: true, cam: { zoom: 1.12, tx: .5, ty: 3.3, tz: .5 } });
+  renderAt(R.couverture.instant, { noText: true, noOverlay: true, cam: { zoom: 1.1, tx: .5, ty: 4.0, tz: .5 } });
   const cv = document.getElementById('cover');
   cv.style.display = 'block';
   cv.querySelector('.ct').textContent = R.couverture.texte;
