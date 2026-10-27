@@ -148,10 +148,10 @@ function makeRadiator() {
   return { g, m, head, screw };
 }
 const rad = makeRadiator();
-rad.g.position.set(.5, 0, -2.6);
+rad.g.position.set(.5, 0, -2.3);        // écarté du mur : la poignée de la clé tourne sans le toucher
 actor(rad.g, ROOM, .42);
-const SCREW = new THREE.Vector3(.5 + 1.43, 1.83, -2.6);   // bout de la vis, en coordonnées du monde
-const VALVE = new THREE.Vector3(.5 - 1.6, .86, -2.6);
+const SCREW = new THREE.Vector3(.5 + 1.43, 1.83, -2.3);   // bout de la vis, en coordonnées du monde
+const VALVE = new THREE.Vector3(.5 - 1.6, .86, -2.3);
 
 // vagues de chaleur au-dessus du radiateur
 const heat = [-.75, 0, .75].map((x, i) => {
@@ -225,10 +225,32 @@ actor(grp(-2.2, 0, 1.9,
 
 // ---------- le matériel ----------
 const ITEMS_END = S[6] + .35;
+// clé de purge en laiton : un canon à embout carré, une collerette, et une poignée papillon à deux ailes percées.
+// Repère local : l'embout est à l'origine, côté -x, et la clé s'étend vers +x (l'axe de la vis).
+const keyBrass = mat(0xe2ae3c, { roughness: .32, metalness: .3 });
+const keyBrassDk = mat(0xb9852a, { roughness: .4, metalness: .3 });
 const key = grp();
-key.add(box(.14, .14, .14, .02, C.brass, .07, 0, 0));
-{ const sh = cyl(.04, .04, .3, C.brass, 16, .27, 0, 0); sh.rotation.z = Math.PI / 2; key.add(sh); }
-key.add(box(.07, .46, .3, .05, C.brass, .44, 0, 0));
+{
+  const barrel = cyl(.07, .07, .26, keyBrass, 24, .13, 0, 0); barrel.rotation.z = Math.PI / 2; key.add(barrel);
+  key.add(box(.02, .075, .075, .006, C.dark, -.002, 0, 0));                     // le trou carré de l'embout
+  const collar = cyl(.095, .095, .045, keyBrassDk, 24, .27, 0, 0); collar.rotation.z = Math.PI / 2; key.add(collar);
+  const wing = new THREE.Shape();
+  wing.moveTo(0, .06);
+  wing.bezierCurveTo(.1, .06, .15, .16, .25, .15);
+  wing.bezierCurveTo(.37, .13, .37, -.13, .25, -.15);
+  wing.bezierCurveTo(.15, -.16, .1, -.06, 0, -.06);
+  wing.bezierCurveTo(-.1, -.06, -.15, -.16, -.25, -.15);
+  wing.bezierCurveTo(-.37, -.13, -.37, .13, -.25, .15);
+  wing.bezierCurveTo(-.15, .16, -.1, .06, 0, .06);
+  for (const u of [-.235, .235]) { const h = new THREE.Path(); h.absarc(u, 0, .05, 0, Math.PI * 2, true); wing.holes.push(h); }
+  const hg = new THREE.ExtrudeGeometry(wing, { depth: .045, bevelEnabled: true, bevelThickness: .012, bevelSize: .012, bevelSegments: 3, curveSegments: 24 });
+  hg.translate(0, 0, -.0225);
+  const handle = new THREE.Mesh(hg, keyBrass);
+  handle.rotation.y = Math.PI / 2;               // la poignée est perpendiculaire à l'axe de la vis
+  handle.position.x = .32;
+  handle.castShadow = handle.receiveShadow = true;
+  key.add(handle);
+}
 // la clé quitte le cadre pendant le gros plan de l'étape 2, puis revient se poser sur la vis à l'étape 3
 const keyA = actor(key, [[S[1] + .6, S[3] + .2], [S[4] + .25, ITEMS_END]]);
 
@@ -263,9 +285,30 @@ ring.renderOrder = 5; scene.add(ring);
 
 // air et eau
 const puffs = Array.from({ length: 14 }, () => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: softDot, transparent: true, depthWrite: false })); scene.add(s); return s; });
-const dropG = new THREE.SphereGeometry(.055, 14, 10);
-const drops = Array.from({ length: 70 }, () => { const m = new THREE.Mesh(dropG, C.water); m.castShadow = true; scene.add(m); return m; });
 const bubbles = Array.from({ length: 12 }, () => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: softDot, transparent: true, depthWrite: false })); scene.add(s); return s; });
+// l'eau : des gouttes en forme de larme, un jet continu, des reflets qui descendent le jet, des ronds et des
+// éclaboussures dans la bassine
+const waterM = new THREE.MeshStandardMaterial({ color: 0x4aa8ef, roughness: .06, metalness: 0, transparent: true, opacity: .9, emissive: 0x1d6fb8, emissiveIntensity: .3 });
+const tearG = new THREE.LatheGeometry(Array.from({ length: 17 }, (_, i) => {
+  const a = i / 16 * Math.PI;
+  return new THREE.Vector2(Math.sin(a) * Math.pow(Math.sin(a / 2), 1.3) * .075, Math.cos(a) * .1);
+}), 24);
+const drops = Array.from({ length: 24 }, () => { const m = new THREE.Mesh(tearG, waterM); m.castShadow = true; scene.add(m); return m; });
+const G2 = 4.4;                                    // la moitié de la gravité de la scène : y = -G2·τ²
+const JV = .62;                                    // vitesse de sortie horizontale de l'eau
+const jetAt = (tau, out = new THREE.Vector3()) => out.copy(SCREW).add(new THREE.Vector3(.08 + JV * tau, -G2 * tau * tau, .02));
+const JET_T = .6, JET_N = 60, JET_R = 12;
+const jetPts = Array.from({ length: 31 }, (_, i) => jetAt(i / 30 * JET_T));
+const jetG = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(jetPts), JET_N, .034, JET_R);
+const jet = new THREE.Mesh(jetG, waterM); jet.castShadow = true; scene.add(jet);
+const glints = Array.from({ length: 6 }, () => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: softDot, transparent: true, depthWrite: false })); scene.add(s); return s; });
+const ripples = Array.from({ length: 4 }, () => {
+  const m = new THREE.Mesh(new THREE.TorusGeometry(.1, .007, 8, 48), new THREE.MeshBasicMaterial({ color: 0xd8efff, transparent: true, depthWrite: false }));
+  m.rotation.x = Math.PI / 2; scene.add(m); return m;
+});
+const splashG = new THREE.SphereGeometry(.022, 10, 8);
+const splashes = Array.from({ length: 10 }, () => { const m = new THREE.Mesh(splashG, waterM); scene.add(m); return m; });
+const hash = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 
 // ---------- la maison (étape 5) ----------
 const HOUSE = [[S[6] + 1.0, S[7]]];
@@ -316,7 +359,7 @@ const CAM0 = { zoom: 1, tx: .2, ty: 1.55, tz: .2 };
 const MOVES = [
   [S[1], S[1] + .6, { zoom: .98, tx: .5, ty: .9, tz: .5 }],                     // le matériel au premier plan
   [S[2], S[2] + .6, CAM0],
-  [S[3], S[3] + .9, { zoom: 1.6, tx: 1.93, ty: 2.25, tz: -2.6 }],               // gros plan sur la vis de purge
+  [S[3], S[3] + .9, { zoom: 1.6, tx: 1.93, ty: 2.25, tz: -2.3 }],               // gros plan sur la vis de purge
   [S[6], S[6] + .6, CAM0],
   [S[6] + 1.0, S[6] + 1.8, { zoom: 1.3, tx: .1, ty: 1.4, tz: .1 }],              // la maison, un peu plus près
   [S[7], S[7] + .6, CAM0],
@@ -382,7 +425,7 @@ function renderAt(t, opts = {}) {
   const roomS = life(t, ROOM, .42);
   for (const w of heat) {
     const ph = ((t * .55 + w.i / 3) % 1 + 1) % 1;
-    w.o.position.set(w.x, 2.05 + ph * .8, -2.5);
+    w.o.position.set(w.x, 2.05 + ph * .8, -2.2);
     w.m.opacity = h * Math.sin(Math.PI * ph) * .8 * clamp(roomS);
     w.o.visible = w.m.opacity > .01;
   }
@@ -401,23 +444,24 @@ function renderAt(t, opts = {}) {
 
   // matériel : posé au premier plan, puis amené sous la vis
   const kS = keyA.obj.scale.x, bS = bowlA.obj.scale.x, tS = towelA.obj.scale.x;
-  const restK = new THREE.Vector3(.0, .0, 2.4), restB = new THREE.Vector3(1.25, 0, 1.25), restT = new THREE.Vector3(2.4, 0, 0);
+  const restK = new THREE.Vector3(-.55, .0, 2.05), restB = new THREE.Vector3(1.25, 0, 1.25), restT = new THREE.Vector3(2.4, 0, 0);
   const dropIn = a => (1 - outc(seg(t, a, a + .45))) * 1.6;    // chute depuis le haut quand l'objet apparaît
   // serviette puis bassine glissent sous la vis (étape 2)
   const mT = ioc(seg(t, S[3] + .5, S[3] + 1.3)), mB = ioc(seg(t, S[3] + .8, S[3] + 1.6));
-  const underT = new THREE.Vector3(2.2, 0, -2.2), underB = new THREE.Vector3(2.25, .07, -2.3);
+  const underT = new THREE.Vector3(2.2, 0, -1.9), underB = new THREE.Vector3(2.25, .07, -2.0);
   towelA.obj.position.copy(restT).lerp(underT, mT).add(new THREE.Vector3(0, Math.sin(Math.PI * mT) * .6 + dropIn(S[1] + 3.6), 0));
   towelA.obj.scale.setScalar(tS * lerp(1.35, 1, mT));
   bowlA.obj.position.copy(restB).lerp(underB, mB).add(new THREE.Vector3(0, Math.sin(Math.PI * mB) * .9 + dropIn(S[1] + 2.1), 0));
   bowlA.obj.scale.setScalar(bS * lerp(1.5, 1, mB));
   // clé : posée au sol, puis engagée sur la vis, tournée d'un demi-tour à gauche, puis refermée
   const mK = ioc(seg(t, S[4] + .4, S[4] + 1.2));
-  const restScale = 2.0, atScale = 1.15;
+  const restScale = 2.2, atScale = 1.0;
   const keyRestPos = t < S[4]
-    ? restK.clone().add(new THREE.Vector3(0, .23 * restScale + dropIn(S[1] + .6), 0))
+    ? restK.clone().add(new THREE.Vector3(0, .175 * restScale + dropIn(S[1] + .6), 0))
     : SCREW.clone().add(new THREE.Vector3(.9, .9, .9));
   keyA.obj.position.copy(keyRestPos).lerp(SCREW, mK).add(new THREE.Vector3(0, Math.sin(Math.PI * mK) * .5, 0));
-  qA.setFromAxisAngle(Y, Math.PI * .75); qB.identity();
+  // au sol, la poignée papillon se présente de trois quarts face à la caméra
+  qA.setFromAxisAngle(Y, t < S[4] ? -.35 : 0); qB.identity();
   const turn = Math.PI * .5 * (ioc(seg(t, S[4] + 1.4, S[4] + 2.0)) + ioc(seg(t, S[4] + 2.3, S[4] + 2.9)))
              - Math.PI * ioc(seg(t, S[5] + 3.4, S[5] + 4.4));
   qR.setFromAxisAngle(X, turn);
@@ -460,30 +504,95 @@ function renderAt(t, opts = {}) {
   });
 
   // l'eau : des gouttes avec des bulles, puis un jet continu, qui s'arrête quand on referme
+  // l'eau : d'abord des gouttes irrégulières mêlées de bulles d'air (ça crachote), puis un jet continu, qui se
+  // détache quand on referme ; restent deux dernières gouttes qui perlent au bout de la vis
   const w0 = S[5] + .4, wJet = S[5] + 1.8, wEnd = S[5] + 3.7;
+  const v = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0);
+  const tear = (d, x, size, lead = 0) => {                 // une larme en chute libre depuis la vis, x secondes après sa sortie
+    jetAt(x, d.position);
+    v.set(JV, -2 * G2 * x, 0);
+    const sp = v.length();
+    d.quaternion.setFromUnitVectors(up, v.normalize().negate());   // la pointe de la larme vers l'arrière de la chute
+    d.scale.set(size, size * (1 + sp * .12 + lead), size);
+  };
   drops.forEach((d, i) => {
-    const jet = i >= 20;
-    const a = jet ? wJet + (i - 20) * .038 : w0 + i * .07 + (i % 3) * .03;
-    const x = t - a;
-    const fall = .62;
-    d.visible = x > 0 && x < fall && a < wEnd && !(jet === false && a > wJet);
-    if (!d.visible) return;
-    d.position.copy(SCREW).add(new THREE.Vector3(.08 + x * .62, -4.4 * x * x, .02));
-    d.scale.setScalar(jet ? 1.15 : .9);
+    d.visible = false;
+    if (i < 16) {                                         // la phase où ça crachote
+      const a = w0 + i * .085 + hash(i) * .05, x = t - a;
+      if (x <= 0 || x >= JET_T || a >= wJet) return;
+      d.visible = true;
+      tear(d, x, .75 + hash(i + 9) * .45);
+    } else if (i < 22) {                                  // des gouttes qui accompagnent l'arrivée et la fin du jet
+      const k = i - 16, a = k < 3 ? wJet - .12 + k * .05 : wEnd + (k - 3) * .07, x = t - a;
+      if (x <= 0 || x >= JET_T) return;
+      d.visible = true;
+      tear(d, x, 1.0);
+    } else {                                              // les dernières gouttes : elles grossissent au bout de la vis, puis tombent
+      const a = wEnd + .55 + (i - 22) * .75, grow = .35, x = t - a;
+      if (x <= 0 || x >= grow + JET_T || t > ITEMS_END) return;
+      d.visible = true;
+      if (x < grow) {
+        const k = backOut(x / grow, 1.2);
+        d.position.copy(SCREW).add(new THREE.Vector3(.07, -.07 * k, .02));
+        d.quaternion.identity();
+        d.scale.set(.8 * k, .9 * k, .8 * k);
+      } else {
+        const xf = (x - grow) * .9;
+        d.position.copy(SCREW).add(new THREE.Vector3(.07 + .12 * xf, -.07 - G2 * xf * xf, .02));
+        d.quaternion.identity();
+        d.scale.set(.8, .9 + xf * .6, .8);
+      }
+    }
   });
   bubbles.forEach((b, i) => {
-    const a = w0 + .05 + i * .11, x = t - a;
-    b.visible = x > 0 && x < .5 && a < wJet;
+    const a = w0 + .05 + i * .11 + hash(i + 3) * .04, x = t - a;
+    b.visible = x > 0 && x < .45 && a < wJet;
     if (!b.visible) return;
-    b.position.copy(SCREW).add(new THREE.Vector3(.12 + x * .5, -3.8 * x * x + .05, .05));
-    b.scale.setScalar(.12);
-    b.material.opacity = .95;
+    b.position.copy(SCREW).add(new THREE.Vector3(.1 + x * .45, -3.2 * x * x + .06 + x * .2, .06));
+    b.scale.setScalar(.09 + x * .2);
+    b.material.opacity = .95 * (1 - x / .45);
+  });
+  // le jet : un tube le long de la trajectoire, dont on ne dessine que la partie déjà remplie d'eau
+  const head = clamp((t - wJet) / JET_T * 1.15), tail = clamp((t - wEnd) / JET_T * 1.15);
+  jet.visible = head > tail && t < ITEMS_END;
+  if (jet.visible) {
+    const per = JET_R * 6, s0 = Math.floor(tail * JET_N), s1 = Math.ceil(head * JET_N);
+    jetG.setDrawRange(s0 * per, (s1 - s0) * per);
+  }
+  glints.forEach((g, i) => {                              // des reflets qui descendent le long du jet
+    const ph = ((t * 1.6 + i / glints.length) % 1 + 1) % 1, tau = ph * JET_T;
+    g.visible = jet.visible && ph > tail && ph < head;
+    if (!g.visible) return;
+    jetAt(tau, g.position).add(new THREE.Vector3(0, .01, .03));
+    g.scale.setScalar(.05);
+    g.material.opacity = .9 * Math.sin(Math.PI * ph);
   });
   const wl = bowl.userData.water;
   const lvl = seg(t, w0 + .5, wEnd + .4);
   wl.visible = lvl > 0 && t < ITEMS_END;
   wl.position.y = .07 + lvl * .14;
   wl.scale.setScalar(.82 + lvl * .14);
+  // ronds dans l'eau et éclaboussures au point d'impact, tant que l'eau arrive
+  const hit = jetAt(JET_T);
+  hit.y = bowlA.obj.position.y + (.07 + lvl * .14) * bowlA.obj.scale.y + .004;
+  const wet = t > w0 + JET_T && t < wEnd + JET_T + .5 && t < ITEMS_END && lvl > 0;
+  const strong = clamp((t - wJet - JET_T) / .3) * (1 - clamp((t - wEnd - JET_T) / .2));
+  ripples.forEach((r, i) => {
+    const ph = ((t - w0) / .55 + i / ripples.length) % 1;
+    r.visible = wet;
+    if (!wet) return;
+    r.position.copy(hit);
+    r.scale.setScalar(.4 + ph * 2.6);
+    r.material.opacity = (1 - ph) * .75;
+  });
+  splashes.forEach((m, i) => {
+    const per = .32, ph = ((t * (1 / per) + hash(i)) % 1 + 1) % 1, th = hash(i + 20) * Math.PI * 2;
+    m.visible = wet && strong > .05 && t > wJet + JET_T;
+    if (!m.visible) return;
+    const r = .05 + ph * (.16 + hash(i + 40) * .1);
+    m.position.copy(hit).add(new THREE.Vector3(Math.cos(th) * r, Math.sin(Math.PI * ph) * (.1 + hash(i + 60) * .08), Math.sin(th) * r));
+    m.scale.setScalar((1 - ph * .6) * strong);
+  });
 
   // maison : les radiateurs se font l'un après l'autre (pastilles 1, 2, 3)
   badges.forEach((b, i) => {
