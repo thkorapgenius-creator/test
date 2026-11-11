@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mon Budget</title>
+  <meta name="theme-color" content="#4f7cff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Mon Budget">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><img src="icon.svg" alt="" width="28" height="28"> Mon Budget</div>
+    <div class="month-nav">
+      <button class="icon-btn" data-action="prev-month" aria-label="Mois précédent">‹</button>
+      <button class="month-label" data-action="today-month" id="monthLabel" title="Revenir au mois en cours"></button>
+      <button class="icon-btn" data-action="next-month" aria-label="Mois suivant">›</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="dashboard" class="active">🏠<span>Accueil</span></button>
+    <button data-tab="transactions">📒<span>Opérations</span></button>
+    <button data-tab="budgets">🎯<span>Budgets</span></button>
+    <button data-tab="savings">🐷<span>Épargne</span></button>
+    <button data-tab="recurring">🔁<span>Fixes</span></button>
+    <button data-tab="settings">⚙️<span>Réglages</span></button>
+  </nav>
+
+  <main id="view"></main>
+
+  <button class="fab" data-action="add-transaction" aria-label="Ajouter une opération">+</button>
+
+  <dialog id="modal">
+    <form method="dialog" id="modalForm">
+      <h2 id="modalTitle"></h2>
+      <div id="modalBody"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn danger" id="modalDelete" hidden>Supprimer</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn ghost" id="modalCancel">Annuler</button>
+        <button type="submit" class="btn primary" id="modalSubmit">Enregistrer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <input type="file" id="importFile" accept="application/json,.json" hidden>
+
+  <script src="app.js"></script>
+</body>
+</html>
